@@ -6,40 +6,43 @@ APP_WND::APP_WND( HINSTANCE h_inst )
 	:
 	h_app_inst { h_inst }
 {
+	const DWORD wnd_style = WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU;
+
 	WNDCLASSEX wcx;
 	ZeroMemory( std::addressof( wcx ), sizeof( WNDCLASSEX ) );
 
+	
+	wcx.cbSize = sizeof( WNDCLASSEX );
+	wcx.style = CS_CLASSDC;
+	wcx.lpfnWndProc = APP_WND::Wnd_Proc;
 	wcx.cbClsExtra = 0;
 	wcx.cbWndExtra = 0;
-	wcx.cbSize = sizeof( WNDCLASSEX );
-	wcx.hIcon = LoadIcon( nullptr, IDI_APPLICATION );
-	wcx.hIconSm = LoadIcon( nullptr, IDI_APPLICATION );
-	wcx.hbrBackground = (HBRUSH) GetStockObject( NULL_BRUSH );
-	wcx.lpszMenuName = nullptr;
-
 	wcx.hInstance = h_app_inst;
-	wcx.lpfnWndProc = APP_WND::Wnd_Proc;
+	wcx.hIcon = LoadIcon( nullptr, IDI_APPLICATION );
 	wcx.hCursor = LoadCursor( nullptr, IDC_ARROW );
+	wcx.hbrBackground = nullptr;
+	wcx.lpszMenuName = nullptr;
 	wcx.lpszClassName = "APP_WND_CLASS";
+	wcx.hIconSm = LoadIcon( nullptr, IDI_APPLICATION );
+	
 
-
-	const auto err_flag = RegisterClassEx( std::addressof( wcx ) ); // Should NOT be FALSE !
-	assert( err_flag ); // FAILED TO CREATE WND CLASS;
+	RegisterClassEx( std::addressof( wcx ) );
+	
 
 
 	RECT window_rect { 350,100, 800 + 350, 600 + 100 };
 	AdjustWindowRect( std::addressof( window_rect ), wnd_style, FALSE );
 	const UINT WR_width = window_rect.right - window_rect.left;
-	const UINT WR_height = window_rect.top - window_rect.bottom;
+	const UINT WR_height = window_rect.bottom - window_rect.top;
 	const UINT x = ( GetSystemMetrics( SM_CXSCREEN ) - WR_width ) / 2;
 	const UINT y = ( GetSystemMetrics( SM_CYSCREEN ) - WR_height ) / 2;
 	h_app_wnd = CreateWindow( wcx.lpszClassName, name, wnd_style, x, y, WR_width, WR_height,
-							  nullptr, nullptr, h_app_inst, nullptr );
+							  nullptr, nullptr, h_app_inst, this );
 
 	assert( h_app_wnd ); // FAILED TO CREATE WND;
 
 	ShowWindow( h_app_wnd, SW_SHOW );
-	// Update wnd
+	UpdateWindow( h_app_wnd );
 }
 
 APP_WND::~APP_WND()
@@ -109,7 +112,7 @@ LRESULT APP_WND::Wnd_Proc( HWND hwnd, UINT msg, WPARAM w_param, LPARAM l_param )
 	{
 		const const CREATESTRUCTW* const p_create = reinterpret_cast<CREATESTRUCTW*>( l_param );
 		p_wnd = reinterpret_cast<APP_WND*>( p_create->lpCreateParams );
-		///// might 
+		///// might
 		SetWindowLongPtr( hwnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>( &APP_WND::Wnd_Proc_Thunk ) );
 	}
 	else

@@ -26,9 +26,8 @@ private:
 	
 private:
 	// WIN32 Attributes
-	HINSTANCE					h_app_inst;
-	HWND						h_app_wnd = NULL;
-	DWORD						wnd_style = WS_OVERLAPPEDWINDOW;
+	HINSTANCE				h_app_inst;
+	HWND					h_app_wnd = NULL;
 	static constexpr char	name[] = "order*";
 
 };
