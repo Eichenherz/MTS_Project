@@ -67,12 +67,13 @@ GFX::GFX( HWNDKey& key )
 	assert( FAILED( hres ) ); // FAILED TO CREATE DEVICE & SWAP_CHAIN
 
 
+	// MAKE TEXTURE2D BUFFER
+
 	// RENDER VIEW TARGET 
 
 	/* Create */
-	ID3D11Texture2D* p_back_buffer_tex = nullptr;
-	p_swap_chain->GetBuffer( 0, __uuidof( ID3D11Texture2D ), reinterpret_cast<void**>( std::addressof( p_back_buffer_tex ) ) );
-	p_device->CreateRenderTargetView( p_back_buffer_tex, nullptr, &p_render_target_view );
+	p_swap_chain->GetBuffer( 0, __uuidof( ID3D11Texture2D ), reinterpret_cast<void**>( std::addressof( p_texture2d_buffer ) ) );
+	p_device->CreateRenderTargetView( p_texture2d_buffer.Get(), nullptr, &p_render_target_view );
 
 	/* Bind */
 	p_inst_context->OMSetRenderTargets( 1, &p_render_target_view, nullptr );
