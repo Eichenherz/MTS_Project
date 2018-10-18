@@ -4,6 +4,8 @@
 #include <d3d11.h>
 #include <memory>
 #include <DirectXColors.h>
+#include <comdef.h>
+#include <string>
 
 #pragma comment(lib,"d3d11.lib")
 
@@ -18,7 +20,12 @@ public:
 	GFX& operator=( const GFX& ) = delete;
 
 	void Test();
-
+	void LogError( HRESULT hr, std::string message )
+	{
+		_com_error error( hr );
+		std::string error_message = "Error: " + message + "\n" + error.ErrorMessage();
+		MessageBox( NULL, error_message.c_str(), "Error", MB_ICONERROR );
+	}
 private:
 
 public:

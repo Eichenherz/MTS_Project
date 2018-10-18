@@ -48,23 +48,21 @@ GFX::GFX( HWNDKey& key )
 	scd.SampleDesc.Quality = 0;
 	//scd.Flags = Don't// keep it Window not fullscreen
 
-
+	D3D_FEATURE_LEVEL  FeatureLevelsRequested = D3D_FEATURE_LEVEL_11_0;
 	HRESULT hres;
-	for ( auto& driver : driver_types )
+	
+	// Problem BLYAT
+	hres = D3D11CreateDeviceAndSwapChain( nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, make_device_flags,
+										  &FeatureLevelsRequested, 1,
+										  D3D11_SDK_VERSION, std::addressof( scd ), &p_swap_chain, 
+										  &p_device, std::addressof( feature_level ), &p_inst_context );
+
+	if( FAILED( hres ) )
 	{
-		hres = D3D11CreateDeviceAndSwapChain( nullptr, driver, nullptr, make_device_flags,
-											  feature_levels.data(), feature_levels.size(),
-											  D3D11_SDK_VERSION, std::addressof( scd ), &p_swap_chain, 
-											  &p_device, std::addressof( feature_level ), &p_inst_context );
-
-		if ( SUCCEEDED( hres ) )
-		{
-			driver_type = driver;
-			break;
-		}
+		LogError( hres, "Failed to create device and swapchain" );
 	}
-
-	assert( FAILED( hres ) ); // FAILED TO CREATE DEVICE & SWAP_CHAIN
+	driver_type = D3D_DRIVER_TYPE_HARDWARE;
+	
 
 
 	// MAKE TEXTURE2D BUFFER DESC
@@ -83,7 +81,7 @@ GFX::GFX( HWNDKey& key )
 
 	/* Create */
 	const HRESULT hres_tex = p_device->CreateTexture2D( std::addressof( tex_buf_desc ), nullptr, &p_texture2d_buffer );
-	assert( FAILED( hres_tex ) ); // FAILED TO CREATE TEX2D BUFFER
+	assert( SUCCEEDED( hres_tex ) ); // FAILED TO CREATE TEX2D BUFFER
 
 	// RENDER VIEW TARGET 
 
