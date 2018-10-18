@@ -67,7 +67,23 @@ GFX::GFX( HWNDKey& key )
 	assert( FAILED( hres ) ); // FAILED TO CREATE DEVICE & SWAP_CHAIN
 
 
-	// MAKE TEXTURE2D BUFFER
+	// MAKE TEXTURE2D BUFFER DESC
+	D3D11_TEXTURE2D_DESC tex_buf_desc;
+	tex_buf_desc.Width = width;
+	tex_buf_desc.Height = height;
+	tex_buf_desc.MipLevels = 1;
+	tex_buf_desc.ArraySize = 1;
+	tex_buf_desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	tex_buf_desc.SampleDesc.Count = 1;
+	tex_buf_desc.SampleDesc.Quality = 0;
+	tex_buf_desc.Usage = D3D11_USAGE_DYNAMIC;
+	tex_buf_desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	tex_buf_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	tex_buf_desc.MiscFlags = 0;
+
+	/* Create */
+	const HRESULT hres_tex = p_device->CreateTexture2D( std::addressof( tex_buf_desc ), nullptr, &p_texture2d_buffer );
+	assert( FAILED( hres_tex ) ); // FAILED TO CREATE TEX2D BUFFER
 
 	// RENDER VIEW TARGET 
 
