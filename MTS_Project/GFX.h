@@ -2,13 +2,19 @@
 
 #include <wrl.h>
 #include <d3d11.h>
+#include <memory>
 
 #pragma comment(lib,"d3d11.lib")
+
 
 class GFX
 {
 public:
-	GFX( class HWND& hwnd );
+	GFX( class HWNDKey& key  );
+	~GFX();
+
+	GFX( const GFX& ) = delete;
+	GFX& operator=( const GFX& ) = delete;
 private:
 
 public:
@@ -27,7 +33,4 @@ private:
 	D3D_DRIVER_TYPE					driver_type;
 	D3D_FEATURE_LEVEL				feature_level;
 	D3D11_VIEWPORT					viewport;
-
-
-
 };

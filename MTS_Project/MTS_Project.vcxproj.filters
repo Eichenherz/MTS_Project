@@ -32,5 +32,8 @@
     <ClInclude Include="GFX.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="FrameworkWin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

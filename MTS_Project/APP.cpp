@@ -114,7 +114,7 @@ LRESULT APP_WND::Wnd_Proc( HWND hwnd, UINT msg, WPARAM w_param, LPARAM l_param )
 	APP_WND* p_wnd;
 	if ( msg == WM_CREATE )
 	{
-		const const CREATESTRUCTW* const p_create = reinterpret_cast<CREATESTRUCTW*>( l_param );
+		const CREATESTRUCTW* const p_create = reinterpret_cast<CREATESTRUCTW*>( l_param );
 		p_wnd = reinterpret_cast<APP_WND*>( p_create->lpCreateParams );
 		///// might
 		SetWindowLongPtr( hwnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>( &APP_WND::Wnd_Proc_Thunk ) );
