@@ -3,6 +3,7 @@
 #include <wrl.h>
 #include <d3d11.h>
 #include <memory>
+#include <DirectXColors.h>
 
 #pragma comment(lib,"d3d11.lib")
 
@@ -15,6 +16,9 @@ public:
 
 	GFX( const GFX& ) = delete;
 	GFX& operator=( const GFX& ) = delete;
+
+	void Test();
+
 private:
 
 public:

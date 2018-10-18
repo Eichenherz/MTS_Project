@@ -29,7 +29,7 @@ APP_WND::APP_WND( HINSTANCE h_inst )
 	
 
 
-	RECT window_rect { 350,100, 800 + 350, 600 + 100 };
+	RECT window_rect { 350,100, GFX::width + 350, GFX::height + 100 };
 	AdjustWindowRect( std::addressof( window_rect ), wnd_style, FALSE );
 	const UINT WR_width = window_rect.right - window_rect.left;
 	const UINT WR_height = window_rect.bottom - window_rect.top;
@@ -46,7 +46,7 @@ APP_WND::APP_WND( HINSTANCE h_inst )
 
 APP_WND::~APP_WND()
 {
-	//UnregisterClass( "APP_WND_CLASS", h_app_inst );
+	UnregisterClass( "APP_WND_CLASS", h_app_inst );
 }
 
 LRESULT APP_WND::Handle_Msg( HWND hwnd, UINT msg, WPARAM w_param, LPARAM l_param )

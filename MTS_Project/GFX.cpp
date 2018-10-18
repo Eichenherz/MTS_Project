@@ -64,7 +64,7 @@ GFX::GFX( HWNDKey& key )
 		}
 	}
 
-	assert( FAILED( hres ) ); // can't have it m8 !
+	assert( FAILED( hres ) ); // FAILED TO CREATE DEVICE & SWAP_CHAIN
 
 
 	// RENDER VIEW TARGET 
@@ -95,4 +95,10 @@ GFX::~GFX()
 	{
 		p_inst_context->ClearState();
 	}
+}
+
+void GFX::Test()
+{
+	p_inst_context->ClearRenderTargetView( p_render_target_view.Get(), DirectX::Colors::Azure );
+	p_swap_chain->Present( 0, 0 );
 }
