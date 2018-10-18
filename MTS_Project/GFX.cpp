@@ -70,8 +70,8 @@ GFX::GFX( HWNDKey& key )
 	// RENDER VIEW TARGET 
 
 	/* Create */
-	ID3D11Texture2D* p_back_buffer_tex;
-	p_swap_chain->GetBuffer( 0, __uuidof( ID3D11Texture2D ), reinterpret_cast<void**>( p_back_buffer_tex ) );
+	ID3D11Texture2D* p_back_buffer_tex = nullptr;
+	p_swap_chain->GetBuffer( 0, __uuidof( ID3D11Texture2D ), reinterpret_cast<void**>( std::addressof( p_back_buffer_tex ) ) );
 	p_device->CreateRenderTargetView( p_back_buffer_tex, nullptr, &p_render_target_view );
 
 	/* Bind */
