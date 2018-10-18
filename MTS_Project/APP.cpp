@@ -9,7 +9,6 @@ APP_WND::APP_WND( HINSTANCE h_inst )
 	const DWORD wnd_style = WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU;
 
 	WNDCLASSEX wcx;
-	ZeroMemory( std::addressof( wcx ), sizeof( WNDCLASSEX ) );
 
 	
 	wcx.cbSize = sizeof( WNDCLASSEX );
@@ -85,6 +84,11 @@ LRESULT APP_WND::Handle_Msg( HWND hwnd, UINT msg, WPARAM w_param, LPARAM l_param
 	}
 
 	return DefWindowProc( hwnd, msg, w_param, l_param );
+}
+
+auto APP_WND::Get_WND_Handler()
+{
+	return h_app_wnd;
 }
 
 bool APP_WND::Process_Message()

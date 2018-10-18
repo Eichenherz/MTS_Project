@@ -21,9 +21,15 @@
     <ClCompile Include="APP.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GFX.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="APP.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GFX.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
