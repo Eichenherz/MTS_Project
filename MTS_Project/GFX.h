@@ -35,6 +35,10 @@ public:
 private:
 	template<typename T> 
 	using COM_PTR = Microsoft::WRL::ComPtr<T>;
+	// NOTE : 
+	// to read addressof( COM_PTR p_obj ) use p_obj.GetAddressOf(), 
+	// because it doesn't reset the obj pointed to by p_obj
+	// operator& sets p_obj = nullptr and gives that address
 
 
 	COM_PTR<ID3D11Device>			p_device;
@@ -42,8 +46,6 @@ private:
 	COM_PTR<IDXGISwapChain>			p_swap_chain;
 	COM_PTR<ID3D11RenderTargetView> p_render_target_view;
 	COM_PTR<ID3D11Texture2D>		p_texture2d_buffer;
-	D3D_DRIVER_TYPE					driver_type;
-	D3D_FEATURE_LEVEL				feature_level;
 	D3D11_VIEWPORT					viewport;
 	
 };

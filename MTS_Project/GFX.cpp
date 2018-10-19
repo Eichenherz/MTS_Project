@@ -32,6 +32,7 @@ GFX::GFX( HWNDKey& key )
 
 	// Swap Chain description
 	DXGI_SWAP_CHAIN_DESC scd;
+	ZeroMemory( std::addressof( scd ), sizeof( DXGI_SWAP_CHAIN_DESC ) );
 
 	scd.BufferCount = 1; // Double buffer
 	scd.BufferDesc.Width = GFX::width;
@@ -48,22 +49,21 @@ GFX::GFX( HWNDKey& key )
 	scd.SampleDesc.Quality = 0;
 	//scd.Flags = Don't// keep it Window not fullscreen
 
-	D3D_FEATURE_LEVEL  FeatureLevelsRequested = D3D_FEATURE_LEVEL_11_0;
-	HRESULT hres;
+
+	// Chnages these if your machine requires so
+	D3D_FEATURE_LEVEL	feature_levels_requested = D3D_FEATURE_LEVEL_11_0;
+	D3D_DRIVER_TYPE		driver_type = D3D_DRIVER_TYPE_HARDWARE;
 	
-	// Problem BLYAT
-	hres = D3D11CreateDeviceAndSwapChain( nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, make_device_flags,
-										  &FeatureLevelsRequested, 1,
-										  D3D11_SDK_VERSION, std::addressof( scd ), &p_swap_chain, 
-										  &p_device, std::addressof( feature_level ), &p_inst_context );
+	const HRESULT hres = D3D11CreateDeviceAndSwapChain(	nullptr, driver_type, nullptr, make_device_flags,
+														std::addressof(feature_levels_requested), 1,
+														D3D11_SDK_VERSION, std::addressof( scd ), &p_swap_chain, 
+														&p_device, nullptr, &p_inst_context );
 
 	if( FAILED( hres ) )
 	{
 		LogError( hres, "Failed to create device and swapchain" );
 	}
-	driver_type = D3D_DRIVER_TYPE_HARDWARE;
 	
-
 
 	// MAKE TEXTURE2D BUFFER DESC
 	D3D11_TEXTURE2D_DESC tex_buf_desc;
@@ -81,7 +81,10 @@ GFX::GFX( HWNDKey& key )
 
 	/* Create */
 	const HRESULT hres_tex = p_device->CreateTexture2D( std::addressof( tex_buf_desc ), nullptr, &p_texture2d_buffer );
-	assert( SUCCEEDED( hres_tex ) ); // FAILED TO CREATE TEX2D BUFFER
+	if ( FAILED( hres_tex ) )
+	{
+		LogError( hres, "Failed to create 2D texture" );
+	}
 
 	// RENDER VIEW TARGET 
 
@@ -90,7 +93,7 @@ GFX::GFX( HWNDKey& key )
 	p_device->CreateRenderTargetView( p_texture2d_buffer.Get(), nullptr, &p_render_target_view );
 
 	/* Bind */
-	p_inst_context->OMSetRenderTargets( 1, &p_render_target_view, nullptr );
+	p_inst_context->OMSetRenderTargets( 1, p_render_target_view.GetAddressOf(), nullptr );
 
 	// MAKE VIEWPORT
 	viewport.Width = float( width );
@@ -114,6 +117,6 @@ GFX::~GFX()
 
 void GFX::Test()
 {
-	p_inst_context->ClearRenderTargetView( p_render_target_view.Get(), DirectX::Colors::Azure );
+	p_inst_context->ClearRenderTargetView( p_render_target_view.Get(), DirectX::Colors::Red );
 	p_swap_chain->Present( 0, 0 );
 }
