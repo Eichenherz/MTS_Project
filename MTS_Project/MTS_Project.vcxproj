@@ -127,7 +127,6 @@
     <ClInclude Include="FrameworkWin.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GFX.h" />
-    <ClInclude Include="Tile.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

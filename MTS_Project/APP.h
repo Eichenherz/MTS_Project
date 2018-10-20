@@ -3,6 +3,9 @@
 #include "FrameworkWin.h"
 #include "GFX.h"
 #include <string>
+#include "Keyboard.h"
+#include "Mouse.h"
+#include <memory>
 
 class HWNDKey
 {
@@ -35,10 +38,13 @@ private:
 	static LRESULT CALLBACK Wnd_Proc( HWND hwnd, UINT msg, WPARAM w_param, LPARAM l_param );
 	static LRESULT CALLBACK Wnd_Proc_Thunk( HWND hwnd, UINT msg, WPARAM w_param, LPARAM l_param );
 	LRESULT	Handle_Msg( HWND hwnd, UINT msg, WPARAM w_param, LPARAM l_param );
-	
+
+public:
+	std::unique_ptr<DirectX::Keyboard>	p_kbd;
+	std::unique_ptr<DirectX::Mouse>		p_mouse;
+
 private:
 	// WIN32 Attributes
 	HINSTANCE				h_app_inst;
 	static constexpr char	name[] = "order*";
-
 };

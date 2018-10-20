@@ -42,6 +42,11 @@ APP_WND::APP_WND( HINSTANCE h_inst )
 
 	ShowWindow( h_app_wnd, SW_SHOW );
 	UpdateWindow( h_app_wnd );
+
+	// Init devices
+	p_kbd = std::make_unique<DirectX::Keyboard>();
+	p_mouse = std::make_unique<DirectX::Mouse>();
+	p_mouse->SetWindow( h_app_wnd );
 }
 
 APP_WND::~APP_WND()
@@ -59,28 +64,20 @@ LRESULT APP_WND::Handle_Msg( HWND hwnd, UINT msg, WPARAM w_param, LPARAM l_param
 		return 0;
 	}
 
-	// Add mouse imput
-	case WM_MOUSEMOVE :
-	{
-		//
-	}
+	// mouse imput
+	case WM_MOUSEMOVE:
 	case WM_LBUTTONDOWN:
-	{
-		
-	}
 	case WM_RBUTTONDOWN:
-	{
-		
-	}
 	case WM_LBUTTONUP:
-	{
-		
-	}
 	case WM_RBUTTONUP:
-	{
-		
-	}
+		DirectX::Mouse::ProcessMessage( msg, w_param, l_param );
+		break;
 
+	// kbd imput
+	case WM_KEYDOWN:
+	case WM_KEYUP:
+		DirectX::Keyboard::ProcessMessage( msg, w_param, l_param );
+		break;
 	}
 
 	return DefWindowProc( hwnd, msg, w_param, l_param );

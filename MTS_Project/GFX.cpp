@@ -144,6 +144,19 @@ void GFX::Draw_Texture( const TEXTURE_PTR& p_tex, Vec2 pos )
 	p_sprite->Draw( p_tex.Get(), pos );
 }
 
+void GFX::Draw_Text( const FONT_PTR & p_font, Vec2 pos, const std::wstring& txt )
+{
+	Draw_Color_Text( p_font, pos, txt, DirectX::Colors::White );
+}
+
+void GFX::Draw_Color_Text( const FONT_PTR & p_font, Vec2 pos, const std::wstring & txt, Color c )
+{
+	// Draw relative to the string center
+	Vec2 origin = p_font->MeasureString( txt.c_str() );
+	origin /= 2;
+	p_font->DrawString( p_sprite.get(), txt.c_str(), pos, c, 0.0f, origin );
+}
+
 void GFX::Load_Texture( TEXTURE_PTR & p_tex, const std::wstring& name )
 {
 	const HRESULT hr_tex_load = DirectX::CreateDDSTextureFromFile( p_device.Get(), name.c_str(), nullptr, p_tex.GetAddressOf() );
@@ -151,5 +164,10 @@ void GFX::Load_Texture( TEXTURE_PTR & p_tex, const std::wstring& name )
 	{
 		LogError( hr_tex_load, "Failed to load surface" );
 	}
+}
+
+void GFX::Load_Font( FONT_PTR & p_font, const std::wstring& name )
+{
+	p_font = std::make_unique<DirectX::SpriteFont>( p_device.Get(), name.c_str() );
 }
  

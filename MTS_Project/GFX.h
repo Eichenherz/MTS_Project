@@ -8,12 +8,15 @@
 #include <string>
 #include "SpriteBatch.h"
 #include "SimpleMath.h"
+#include "SpriteFont.h"
 
 #pragma comment(lib,"d3d11.lib")
 
-
+// Internal type aliases
 using Vec2 = DirectX::SimpleMath::Vector2;
+using Color = DirectX::XMVECTORF32;
 using TEXTURE_PTR = Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>;
+using FONT_PTR = std::unique_ptr<DirectX::SpriteFont>;
 
 class GFX
 {
@@ -34,7 +37,10 @@ public:
 	void Begin();
 	void End();
 	void Draw_Texture( const TEXTURE_PTR& p_tex, Vec2 pos );
+	void Draw_Text( const FONT_PTR& p_font, Vec2 pos, const std::wstring& txt );
+	void Draw_Color_Text( const FONT_PTR& p_font, Vec2 pos, const std::wstring& txt, Color c );
 	void Load_Texture( TEXTURE_PTR& p_tex, const std::wstring& name );
+	void Load_Font( FONT_PTR& p_font, const std::wstring& name );
 
 private:
 	void LogError( HRESULT hr, std::string message )
