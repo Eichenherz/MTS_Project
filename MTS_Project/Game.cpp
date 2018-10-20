@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "APP.h"
+#include <algorithm>
 
 using namespace TILE_DRAW_PARAMS;
 
@@ -54,7 +55,19 @@ void Game::Update()
 	}
 	case Game::GAME_STATE::PLAYING:
 	{
-		
+
+
+		if ( std::is_sorted( tiles.cbegin(), tiles.cend(), 
+			[] ( const Tile& t1, const Tile& t2 )->bool
+			{
+				const auto num1 = std::stoi( t1.number );
+				const auto num2 = std::stoi( t2.number );
+
+				return ( num1 < num2 );
+			} ) )
+		{
+			gs = GAME_STATE::RESULTS;
+		}
 		break;
 	}
 	case Game::GAME_STATE::RESULTS:

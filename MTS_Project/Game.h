@@ -45,8 +45,6 @@ private:
 		COUNT
 	} gs = GAME_STATE::WELCOME;
 
-	bool playing = false;
-
 	std::random_device	rd;
 	std::mt19937		rng;
 }; 
