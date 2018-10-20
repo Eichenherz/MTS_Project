@@ -2,6 +2,7 @@
 #include "APP.h"
 #include <array>
 #include <cassert>
+#include "DDSTextureLoader.h"
 
 GFX::GFX( HWNDKey& key )
 {
@@ -66,7 +67,7 @@ GFX::GFX( HWNDKey& key )
 	
 
 	// MAKE TEXTURE2D BUFFER DESC
-	D3D11_TEXTURE2D_DESC tex_buf_desc;
+	D3D11_TEXTURE2D_DESC tex_buf_desc = {};
 	tex_buf_desc.Width = width;
 	tex_buf_desc.Height = height;
 	tex_buf_desc.MipLevels = 1;
@@ -79,12 +80,12 @@ GFX::GFX( HWNDKey& key )
 	tex_buf_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	tex_buf_desc.MiscFlags = 0;
 
-	/* Create */
 	const HRESULT hres_tex = p_device->CreateTexture2D( std::addressof( tex_buf_desc ), nullptr, &p_texture2d_buffer );
 	if ( FAILED( hres_tex ) )
 	{
 		LogError( hres, "Failed to create 2D texture" );
 	}
+
 
 	// RENDER VIEW TARGET 
 
@@ -105,6 +106,10 @@ GFX::GFX( HWNDKey& key )
 	// Bind it !
 	p_inst_context->RSSetViewports( 1, std::addressof( viewport ) );
 
+
+	// Init sprite
+	p_sprite = std::make_unique<DirectX::SpriteBatch>( p_inst_context.Get() );
+
 }
 
 GFX::~GFX()
@@ -115,8 +120,36 @@ GFX::~GFX()
 	}
 }
 
-void GFX::Test()
+void GFX::Begin()
 {
-	p_inst_context->ClearRenderTargetView( p_render_target_view.Get(), DirectX::Colors::Red );
-	p_swap_chain->Present( 0, 0 );
+	// Set backgroung
+	p_inst_context->ClearRenderTargetView( p_render_target_view.Get(), DirectX::Colors::CadetBlue );
+
+	p_sprite->Begin();
 }
+
+void GFX::End()
+{
+	p_sprite->End();
+
+	const HRESULT hr_draw = p_swap_chain->Present( 0, 0 );
+	if ( FAILED( hr_draw ) )
+	{
+		LogError( hr_draw, "Failed to draw" );
+	}
+}
+
+void GFX::Draw_Texture( const TEXTURE_PTR& p_tex, Vec2 pos )
+{
+	p_sprite->Draw( p_tex.Get(), pos );
+}
+
+void GFX::Load_Texture( TEXTURE_PTR & p_tex, const std::wstring& name )
+{
+	const HRESULT hr_tex_load = DirectX::CreateDDSTextureFromFile( p_device.Get(), name.c_str(), nullptr, p_tex.GetAddressOf() );
+	if ( FAILED( hr_tex_load ) )
+	{
+		LogError( hr_tex_load, "Failed to load surface" );
+	}
+}
+ 

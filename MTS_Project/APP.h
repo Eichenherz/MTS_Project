@@ -42,13 +42,3 @@ private:
 	static constexpr char	name[] = "order*";
 
 };
-
-
-class Game
-{
-public:
-	//  Init, Logic & Drawing
-	bool Init();
-	void Update();
-	void Render();
-};
