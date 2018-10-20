@@ -98,10 +98,8 @@ GFX::GFX( HWNDKey& key )
 
 GFX::~GFX()
 {
-	if ( p_inst_context )
-	{
-		p_inst_context->ClearState();
-	}
+	p_inst_context->ClearState();
+	
 #ifdef _DEBUG
 	ID3D11Debug* p_debug_device = nullptr;
 	HRESULT hr_mem_leak = p_device->QueryInterface( __uuidof( ID3D11Debug ), reinterpret_cast<void**>( std::addressof( p_debug_device ) ) );
@@ -139,7 +137,12 @@ void GFX::End()
 
 void GFX::Draw_Texture( const TEXTURE_PTR& p_tex, Vec2 pos )
 {
-	p_sprite->Draw( p_tex.Get(), pos );
+	Draw_Color_Texture( p_tex.Get(), pos, DirectX::Colors::White );
+}
+
+void GFX::Draw_Color_Texture( const TEXTURE_PTR & p_tex, Vec2 pos, Color c )
+{
+	p_sprite->Draw( p_tex.Get(), pos, nullptr, c );
 }
 
 void GFX::Draw_Text( const FONT_PTR & p_font, Vec2 pos, const std::wstring& txt )
