@@ -26,9 +26,7 @@ Game::Game( APP_WND& _wnd )
 	dummy_tile.aabb.r = tile_half_len;
 
 	// Ramdom shuffle the tiles
-	
-
-	std::shuffle( tiles.begin(), std::prev( tiles.end() ), rng );
+	shuffle_tiles( tiles.begin(), tiles.end(), rng );
 }
 
 void Game::Run()
@@ -41,14 +39,6 @@ void Game::Run()
 
 void Game::Update()
 {
-	if ( playing )
-	{
-		gs = GAME_STATE::PLAYING;
-	}
-	else
-	{
-		gs = GAME_STATE::WELCOME;
-	}
 	switch ( gs )
 	{
 
@@ -58,7 +48,7 @@ void Game::Update()
 		
 		if ( mouse_event.leftButton )
 		{
-			playing = true;
+			gs = GAME_STATE::PLAYING;;
 		}
 		break;
 	}

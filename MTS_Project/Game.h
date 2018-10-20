@@ -31,6 +31,7 @@ private:
 	FONT_PTR	p_inst_font;
 
 	// GAME ASSETS :
+	// If you change the # of tiles go change it in Tile.h too
 	std::array<Tile, 9>		tiles;
 	Tile					dummy_tile;
 
