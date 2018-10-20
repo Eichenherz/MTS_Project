@@ -14,23 +14,7 @@ GFX::GFX( HWNDKey& key )
 
 #endif // _DEBUG
 
-	// Needed in case of no gfx card  // Might remove later
-	constexpr std::array<D3D_DRIVER_TYPE, 3> driver_types =
-	{
-		D3D_DRIVER_TYPE_HARDWARE,
-		D3D_DRIVER_TYPE_WARP,
-		D3D_DRIVER_TYPE_REFERENCE
-	};
-
-	// Assume at least DX11
-	constexpr std::array<D3D_FEATURE_LEVEL, 4> feature_levels =
-	{
-		D3D_FEATURE_LEVEL_12_1,
-		D3D_FEATURE_LEVEL_12_0,
-		D3D_FEATURE_LEVEL_11_1,
-		D3D_FEATURE_LEVEL_11_0
-	};
-
+	
 	// Swap Chain description
 	DXGI_SWAP_CHAIN_DESC scd;
 	ZeroMemory( std::addressof( scd ), sizeof( DXGI_SWAP_CHAIN_DESC ) );
@@ -118,6 +102,20 @@ GFX::~GFX()
 	{
 		p_inst_context->ClearState();
 	}
+#ifdef _DEBUG
+	ID3D11Debug* p_debug_device = nullptr;
+	HRESULT hr_mem_leak = p_device->QueryInterface( __uuidof( ID3D11Debug ), reinterpret_cast<void**>( std::addressof( p_debug_device ) ) );
+	if ( FAILED( hr_mem_leak ) )
+	{
+		LogError( hr_mem_leak, "Failed to query" );
+	}
+	hr_mem_leak = p_debug_device->ReportLiveDeviceObjects( D3D11_RLDO_DETAIL );
+	if ( FAILED( hr_mem_leak ) )
+	{
+		LogError( hr_mem_leak, "Failed to report live objs" );
+	}
+	p_debug_device->Release();
+#endif // _DEBUG
 }
 
 void GFX::Begin()

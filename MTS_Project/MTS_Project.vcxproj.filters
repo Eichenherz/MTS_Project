@@ -46,7 +46,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Resources\Tile.dds">
+    <Image Include="Resources\Rect70x100.dds">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

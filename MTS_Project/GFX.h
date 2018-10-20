@@ -51,8 +51,9 @@ private:
 	}
 
 public:
-	static constexpr UINT width = 800;
-	static constexpr UINT height = 600;
+	static constexpr UINT width = 1024;
+	static constexpr UINT height = 768;
+	static constexpr Vec2 math_origin { width / 2, height / 2 };
 
 private:
 	COM_PTR<ID3D11Device>					p_device;
