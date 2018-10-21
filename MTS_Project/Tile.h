@@ -12,6 +12,7 @@ namespace TILE_DRAW_PARAMS
 	constexpr UINT	tile_slop = 15;
 	constexpr Vec2	tile_offset { tile_width / 2 - tile_slop, tile_height / 2 };
 	constexpr UINT	tile_x_step = tile_width + tile_slop;
+	constexpr Vec2	tile_half_len { tile_width / 2, tile_height / 2 };
 }
 
 // NOTE: for simplicity I won't OOP the tiles
@@ -21,7 +22,7 @@ struct Tile
 	struct AABB
 	{
 		DirectX::SimpleMath::Vector2 c;
-		DirectX::SimpleMath::Vector2 r;
+		DirectX::SimpleMath::Vector2 r = TILE_DRAW_PARAMS::tile_half_len;
 	};
 
 	// For changing the color of the corresp number
@@ -57,7 +58,7 @@ inline bool AABB_vs_Point( const Tile::AABB& a, const Vec2& pt )
 
 
 // Random shuffeling
-// If you change the # of tiles go change it in Tile.h too
+// If you change the # of tiles go change it in Game.h too
 using Tile_Iter = std::array<Tile, 9>::iterator;
 template<class URBG>
 void shuffle_tiles( Tile_Iter first, Tile_Iter last, URBG&& g )

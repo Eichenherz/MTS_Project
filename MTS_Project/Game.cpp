@@ -17,14 +17,12 @@ Game::Game( APP_WND& _wnd )
 	gfx.Load_Texture( p_tile_texture, L"Resources/Rect70x100.dds" );
 
 	// Set tiles
-	constexpr Vec2 tile_half_len { tile_width / 2, tile_height / 2 };
+	
 	for ( size_t i = 0; i < tiles.size(); ++i )
 	{
 		tiles [i].number = std::to_wstring( i + 1 );
 		tiles [i].aabb.c = Vec2( (float) tile_x_step * ( i + 1 ), (float) GFX::height / 2 );
-		tiles [i].aabb.r = tile_half_len;
 	}
-	dummy_tile.aabb.r = tile_half_len;
 
 	// Ramdom shuffle the tiles
 	shuffle_tiles( tiles.begin(), tiles.end(), rng );
@@ -55,7 +53,34 @@ void Game::Update()
 	}
 	case Game::GAME_STATE::PLAYING:
 	{
+		const auto mouse_state = wnd.p_mouse->GetState();
+		tracker.Update( mouse_state );
+		if ( tracker.leftButton == DirectX::Mouse::ButtonStateTracker::PRESSED )
+		{
+			const auto mouse_pos = Vec2 { (float) mouse_state.x, (float) mouse_state.y };
 
+			auto iter = tiles.begin(); // Need to store the initial tile
+			for ( ; iter != tiles.end(); ++iter )
+			{
+				if ( AABB_vs_Point( iter->aabb, mouse_pos ) )
+				{
+					dummy_tile.number = iter->number;
+					dummy_tile.aabb.c = mouse_pos;
+					engage_dummy_flag = true;
+					break;
+				}
+			}
+
+			for ( auto& tile : tiles )
+			{
+				if ( AABB_vs_AABB( tile.aabb, dummy_tile.aabb ) && 
+					 tracker.leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED )
+				{
+					std::swap( tile, *iter );
+					engage_dummy_flag = false;
+				}
+			}
+		}
 
 		if ( std::is_sorted( tiles.cbegin(), tiles.cend(), 
 			[] ( const Tile& t1, const Tile& t2 )->bool
@@ -104,6 +129,11 @@ void Game::Draw_Model()
 		{
 			gfx.Draw_Texture( p_tile_texture, tile.aabb.c );
 			gfx.Draw_Text( p_title_font, tile.aabb.c + tile_offset, tile.number );
+		}
+		if ( engage_dummy_flag )
+		{
+			gfx.Draw_Texture( p_tile_texture, dummy_tile.aabb.c );
+			gfx.Draw_Text( p_title_font, dummy_tile.aabb.c + tile_offset, dummy_tile.number );
 		}
 		break; 
 	}
