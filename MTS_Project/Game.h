@@ -3,6 +3,9 @@
 #include "GFX.h"
 #include <array>
 #include "Tile.h"
+#include "Mouse.h"
+
+using ButtonState = DirectX::Mouse::ButtonStateTracker;
 
 class Game
 {
@@ -26,6 +29,8 @@ private:
 	// RANDOM STUFF
 	std::random_device	rd;
 	std::mt19937		rng;
+	// MOUSE BUTTON TRACKER
+	ButtonState			tracker;
 
 	// GAME ASSETS
 	// Store tile texture here since all tiles share same textures;
@@ -50,6 +55,5 @@ private:
 		RESULTS
 	};
 	GAME_STATE  gs = GAME_STATE::WELCOME;
-	bool		engage_dummy_flag = false;
 	bool		clicked_in_this_frame = false;
 }; 

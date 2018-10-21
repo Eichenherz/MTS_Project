@@ -53,7 +53,7 @@ void Game::Update()
 	}
 	case Game::GAME_STATE::PLAYING:
 	{
-		// PREVENT SEVERAL CLICKS PER FRAME
+		// PREVENTS SEVERAL SWAPS PER FRAME
 		clicked_in_this_frame = false;
 
 		const auto mouse_state = wnd.p_mouse->GetState();
@@ -61,16 +61,17 @@ void Game::Update()
 		{
 			const auto mouse_pos = Vec2 { (float) mouse_state.x, (float) mouse_state.y };
 
-			if ( dummy_tile.state != Tile::STATE::COLLIED )
+			if ( dummy_tile.state != Tile::STATE::COLLIDE )
 			{
 				// AQUIRE TILE
 				for ( auto iter = tiles.begin(); iter != tiles.end(); ++iter )
 				{
-					if ( AABB_vs_Point( iter->aabb, mouse_pos ) && !engage_dummy_flag )
+					if ( AABB_vs_Point( iter->aabb, mouse_pos ) )
 					{
 						dummy_tile.number = iter->number;
-						dummy_tile.state = Tile::STATE::COLLIED;
+						dummy_tile.state = Tile::STATE::COLLIDE;
 						swap_iter = iter;
+						iter->state = Tile::STATE::PENDING;
 						break;
 					}
 				}
@@ -78,13 +79,19 @@ void Game::Update()
 
 			dummy_tile.aabb.c = mouse_pos;
 			
-			if ( dummy_tile.state == Tile::STATE::COLLIED )
+			if ( dummy_tile.state == Tile::STATE::COLLIDE )
 			{
 				// SWAP TILES
 				for ( auto& tile : tiles )
 				{
-					if ( AABB_vs_AABB( tile.aabb, dummy_tile.aabb ) &&
-						 mouse_state.rightButton && !clicked_in_this_frame )
+					const auto tile_collision = AABB_vs_AABB( tile.aabb, dummy_tile.aabb );
+					if ( &tile != &( *swap_iter ) )
+					{
+						tile.state = ( tile_collision ) ? 
+									 Tile::STATE::COLLIDE: 
+									 Tile::STATE::UNMOVED;
+					}
+					if ( tile_collision && mouse_state.rightButton && !clicked_in_this_frame )
 					{
 						std::swap( tile.number, swap_iter->number );
 						clicked_in_this_frame = true;
@@ -92,6 +99,15 @@ void Game::Update()
 						break;
 					}
 				}
+			}
+		}
+		else
+		{
+			dummy_tile.state = Tile::STATE::PENDING;
+			for ( auto& tile : tiles )
+			{
+				// AFTER NO ACTION TOOK PLACE GO BACK TO NORMAL STATE
+				tile.state = Tile::STATE::UNMOVED;
 			}
 		}
 
@@ -110,7 +126,7 @@ void Game::Update()
 	}
 	case Game::GAME_STATE::RESULTS:
 	{
-		
+		const auto key_pressed = wnd.p_kbd->GetState();
 		break;
 	}
 
@@ -140,10 +156,27 @@ void Game::Draw_Model()
 		gfx.Draw_Color_Text( p_inst_font, Vec2 { GFX::width / 2, 570 }, L"* arrange the numbers as fast as you can", DirectX::Colors::OrangeRed );
 		for ( const auto& tile : tiles )
 		{
-			gfx.Draw_Texture( p_tile_texture, tile.aabb.c );
+			switch ( tile.state ) // COLOR ACCORDING TO STATE
+			{
+			case Tile::STATE::COLLIDE:
+			{
+				gfx.Draw_Color_Texture( p_tile_texture, tile.aabb.c, DirectX::Colors::Red );
+				break;
+			}
+			case Tile::STATE::PENDING:
+			{
+				gfx.Draw_Color_Texture( p_tile_texture, tile.aabb.c, DirectX::Colors::DarkSlateGray );
+				break;
+			}
+			case Tile::STATE::UNMOVED:
+			{
+				gfx.Draw_Texture( p_tile_texture, tile.aabb.c );
+				break;
+			}
+			}
 			gfx.Draw_Text( p_title_font, tile.aabb.c + tile_offset, tile.number );
 		}
-		if ( dummy_tile.state == Tile::STATE::COLLIED )
+		if ( dummy_tile.state == Tile::STATE::COLLIDE )
 		{
 			gfx.Draw_Texture( p_tile_texture, dummy_tile.aabb.c );
 			gfx.Draw_Text( p_title_font, dummy_tile.aabb.c + tile_offset, dummy_tile.number );

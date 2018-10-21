@@ -30,8 +30,7 @@ struct Tile
 	{
 		UNMOVED,
 		PENDING,
-		COLLIED,
-		COUNT
+		COLLIDE
 	} state = STATE::UNMOVED;
 
 	std::wstring	number;
