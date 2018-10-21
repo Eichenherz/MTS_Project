@@ -84,13 +84,15 @@ void Game::Update()
 				for ( auto& tile : tiles )
 				{
 					const auto tile_collision = AABB_vs_AABB( tile.aabb, dummy_tile.aabb );
+					const auto contains_mouse = AABB_vs_Point( tile.aabb, mouse_pos );
 					if ( &tile != &( *swap_iter ) )
 					{
-						tile.state = ( tile_collision ) ? 
+						tile.state = ( tile_collision && contains_mouse ) ? 
 									 Tile::STATE::COLLIDE: 
 									 Tile::STATE::UNMOVED;
 					}
-					if ( tile_collision && mouse_state.rightButton && !clicked_in_this_frame )
+					if ( tile_collision && contains_mouse && 
+						 mouse_state.rightButton && !clicked_in_this_frame )
 					{
 						std::swap( tile.number, swap_iter->number );
 						clicked_in_this_frame = true;
