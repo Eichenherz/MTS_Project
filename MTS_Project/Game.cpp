@@ -61,7 +61,7 @@ void Game::Update()
 		{
 			const auto mouse_pos = Vec2 { (float) mouse_state.x, (float) mouse_state.y };
 
-			if ( dummy_tile.state != Tile::STATE::COLLIDE )
+			if ( dummy_tile.state == Tile::STATE::UNMOVED )
 			{
 				// AQUIRE TILE
 				for ( auto iter = tiles.begin(); iter != tiles.end(); ++iter )
@@ -69,9 +69,8 @@ void Game::Update()
 					if ( AABB_vs_Point( iter->aabb, mouse_pos ) )
 					{
 						dummy_tile.number = iter->number;
-						dummy_tile.state = Tile::STATE::COLLIDE;
+						dummy_tile.state = iter->state = Tile::STATE::PENDING;
 						swap_iter = iter;
-						iter->state = Tile::STATE::PENDING;
 						break;
 					}
 				}
@@ -79,7 +78,7 @@ void Game::Update()
 
 			dummy_tile.aabb.c = mouse_pos;
 			
-			if ( dummy_tile.state == Tile::STATE::COLLIDE )
+			if ( dummy_tile.state != Tile::STATE::UNMOVED )
 			{
 				// SWAP TILES
 				for ( auto& tile : tiles )
@@ -95,7 +94,7 @@ void Game::Update()
 					{
 						std::swap( tile.number, swap_iter->number );
 						clicked_in_this_frame = true;
-						dummy_tile.state = Tile::STATE::PENDING;
+						dummy_tile.state = Tile::STATE::UNMOVED;
 						break;
 					}
 				}
@@ -103,7 +102,7 @@ void Game::Update()
 		}
 		else
 		{
-			dummy_tile.state = Tile::STATE::PENDING;
+			dummy_tile.state = Tile::STATE::UNMOVED;
 			for ( auto& tile : tiles )
 			{
 				// AFTER NO ACTION TOOK PLACE GO BACK TO NORMAL STATE
@@ -148,7 +147,7 @@ void Game::Draw_Model()
 	{
 		gfx.Draw_Color_Text( p_inst_font, Vec2 { GFX::width / 2, 570 }, L"* click anywhere to START", DirectX::Colors::OrangeRed );
 
-		
+
 		break;
 	}
 	case Game::GAME_STATE::PLAYING:
@@ -176,12 +175,16 @@ void Game::Draw_Model()
 			}
 			gfx.Draw_Text( p_title_font, tile.aabb.c + tile_offset, tile.number );
 		}
-		if ( dummy_tile.state == Tile::STATE::COLLIDE )
+
+		if ( dummy_tile.state != Tile::STATE::UNMOVED )
 		{
+			const auto color = ( dummy_tile.state == Tile::STATE::COLLIDE ) ?
+								DirectX::Colors::Red :
+								DirectX::Colors::White;
 			gfx.Draw_Texture( p_tile_texture, dummy_tile.aabb.c );
 			gfx.Draw_Text( p_title_font, dummy_tile.aabb.c + tile_offset, dummy_tile.number );
 		}
-		break; 
+		break;
 	}
 	case Game::GAME_STATE::RESULTS:
 	{
@@ -190,4 +193,5 @@ void Game::Draw_Model()
 	}
 
 	}
+	
 }

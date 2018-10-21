@@ -12,7 +12,7 @@ namespace TILE_DRAW_PARAMS
 	constexpr UINT	tile_slop = 15;
 	constexpr Vec2	tile_offset { tile_width / 2 - tile_slop, tile_height / 2 };
 	constexpr UINT	tile_x_step = tile_width + tile_slop;
-	constexpr Vec2	tile_half_len { tile_width / 2, tile_height / 2 };
+	constexpr Vec2	tile_half_len { tile_width / 2 - 5, tile_height / 2 };
 }
 
 // NOTE: for simplicity I won't OOP the tiles
