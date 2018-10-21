@@ -29,6 +29,8 @@ Game::Game( APP_WND& _wnd )
 
 	// Ramdom shuffle the tiles
 	shuffle_tiles( tiles.begin(), tiles.end(), rng );
+
+	// Set nick
 }
 
 void Game::Run()
@@ -46,9 +48,6 @@ void Game::Update()
 
 	case Game::GAME_STATE::WELCOME:
 	{
-
-
-
 		const auto mouse_event = wnd.p_mouse->GetState();
 		
 		if ( mouse_event.leftButton )
@@ -61,7 +60,7 @@ void Game::Update()
 	case Game::GAME_STATE::PLAYING:
 	{
 		// GET TIME
-		seconds = timer.Mark();
+		seconds = UINT( timer.Mark() );
 
 		// PREVENTS SEVERAL SWAPS PER FRAME
 		clicked_in_this_frame = false;
@@ -173,7 +172,6 @@ void Game::Draw_Model()
 	{
 		gfx.Draw_Color_Text( p_inst_font, Vec2 { GFX::width / 2, 570 }, L"* click anywhere to START", DirectX::Colors::OrangeRed );
 
-
 		break;
 	}
 	case Game::GAME_STATE::PLAYING:
@@ -217,8 +215,12 @@ void Game::Draw_Model()
 		// want to show same scene, but not to take user imp
 	case Game::GAME_STATE::RESULTS:
 	{
+		// Manual double precision display pseudo hack
+		auto zeit = std::to_wstring( time );
+		zeit.erase( zeit.cbegin() + 5, zeit.cend() );
+
 		gfx.Draw_Color_Text( p_inst_font, Vec2 { GFX::width / 2, 570 }, L"* type in your nickname", DirectX::Colors::OrangeRed );
-		gfx.Draw_Text( p_cont_font, Vec2 { GFX::width / 2, 200 }, std::to_wstring( time ) + L"s" + nickname );
+		gfx.Draw_Text( p_cont_font, Vec2 { GFX::width / 2, 200 }, zeit + L"s" + nickname );
 		break;
 	}
 

@@ -54,7 +54,7 @@ private:
 	// GAME DATA
 	std::wstring		nickname = {};
 	double				time = 0.0;
-	double				seconds = 0.0;
+	UINT				seconds = 0;
 
 
 	// GAME STATE PARAMS
@@ -65,6 +65,6 @@ private:
 		RESULTS,
 		ENDGAME
 	};
-	GAME_STATE			gs = GAME_STATE::RESULTS;
+	GAME_STATE			gs = GAME_STATE::WELCOME;
 	bool				clicked_in_this_frame = false;
 }; 
