@@ -43,19 +43,20 @@ void Game::Update()
 
 	case Game::GAME_STATE::WELCOME:
 	{
-		
-
-
 		const auto mouse_event = wnd.p_mouse->GetState();
 		
 		if ( mouse_event.leftButton )
 		{
-			gs = GAME_STATE::PLAYING;;
+			gs = GAME_STATE::PLAYING;
+			timer.Start();
 		}
 		break;
 	}
 	case Game::GAME_STATE::PLAYING:
 	{
+		// GET TIME
+		seconds = timer.Mark();
+
 		// PREVENTS SEVERAL SWAPS PER FRAME
 		clicked_in_this_frame = false;
 
@@ -125,6 +126,8 @@ void Game::Update()
 			} ) )
 		{
 			gs = GAME_STATE::RESULTS;
+			// GET PLAYER TIME
+			time = timer.Mark();
 		}
 		break;
 	}
@@ -157,6 +160,7 @@ void Game::Draw_Model()
 	}
 	case Game::GAME_STATE::PLAYING:
 	{
+		gfx.Draw_Text( p_cont_font, Vec2 { GFX::width / 2,100 }, std::to_wstring( seconds ) + L"s" );
 		gfx.Draw_Color_Text( p_inst_font, Vec2 { GFX::width / 2, 570 }, L"* arrange the numbers as fast as you can", DirectX::Colors::OrangeRed );
 		for ( const auto& tile : tiles )
 		{
@@ -193,6 +197,7 @@ void Game::Draw_Model()
 	}
 	case Game::GAME_STATE::RESULTS:
 	{
+		gfx.Draw_Text( p_cont_font, Vec2 { GFX::width / 2, 200 }, std::to_wstring( time ) + L"s" );
 		gfx.Draw_Color_Text( p_inst_font, Vec2 { GFX::width / 2, 570 }, L"* type in your nickname", DirectX::Colors::OrangeRed );
 		break;
 	}

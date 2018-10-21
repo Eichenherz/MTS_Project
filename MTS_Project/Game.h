@@ -3,9 +3,8 @@
 #include "GFX.h"
 #include <array>
 #include "Tile.h"
-#include "Mouse.h"
+#include "Timer.h"
 
-using ButtonState = DirectX::Mouse::ButtonStateTracker;
 
 class Game
 {
@@ -29,8 +28,13 @@ private:
 	// RANDOM STUFF
 	std::random_device	rd;
 	std::mt19937		rng;
-	// MOUSE BUTTON TRACKER
-	ButtonState			tracker;
+
+
+	// TIMER
+	Timer	timer;
+	double	time = 0.0;
+	double	seconds = 0.0;
+
 
 	// GAME ASSETS
 	// Store tile texture here since all tiles share same textures;
@@ -40,7 +44,7 @@ private:
 	FONT_PTR			p_inst_font;
 
 
-	// GAME OBJECTS :
+	// GAME OBJECTS
 	// If you change the # of tiles go change it in Tile.h too
 	std::array<Tile, 9>	tiles;
 	Tile				dummy_tile;
