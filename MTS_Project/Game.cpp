@@ -4,6 +4,9 @@
 
 using namespace TILE_DRAW_PARAMS;
 
+wchar_t Map_Key_to_WChar( DirectX::Keyboard::State state );
+
+
 Game::Game( APP_WND& _wnd )
 	:
 	wnd { _wnd },
@@ -43,6 +46,9 @@ void Game::Update()
 
 	case Game::GAME_STATE::WELCOME:
 	{
+
+
+
 		const auto mouse_event = wnd.p_mouse->GetState();
 		
 		if ( mouse_event.leftButton )
@@ -133,10 +139,18 @@ void Game::Update()
 	}
 	case Game::GAME_STATE::RESULTS:
 	{
-		const auto key_pressed = wnd.p_kbd->GetState();
+		const auto kbd_stat = wnd.p_kbd->GetState();
+		kbd_tracker.Update( kbd_stat );
+		if ( !kbd_stat.Enter )
+		{
+			const auto Wchar = Map_Key_to_WChar( kbd_stat );
+			if ( Wchar != L'0' )
+			{
+				nickname += Wchar;
+			}
+		}
 		break;
 	}
-
 	}
 
 }
@@ -197,11 +211,43 @@ void Game::Draw_Model()
 	}
 	case Game::GAME_STATE::RESULTS:
 	{
-		gfx.Draw_Text( p_cont_font, Vec2 { GFX::width / 2, 200 }, std::to_wstring( time ) + L"s" );
 		gfx.Draw_Color_Text( p_inst_font, Vec2 { GFX::width / 2, 570 }, L"* type in your nickname", DirectX::Colors::OrangeRed );
+		gfx.Draw_Text( p_cont_font, Vec2 { GFX::width / 2, 200 }, std::to_wstring( time ) + L"s" + nickname );
 		break;
 	}
 
 	}
 	
+}
+
+wchar_t Map_Key_to_WChar( DirectX::Keyboard::State state, Kbd_Tracker tracker )
+{
+	if( tracker.IsKeyPressed( DirectX::Keyboard::Keys::A ) { return L'A';}
+	if( state.B ) { return L'B';}
+	if( state.C ) { return L'C';}
+	if( state.D ) { return L'D';}
+	if( state.E ) { return L'E';}
+	if( state.F ) { return L'F';}
+	if( state.G ) { return L'G';}
+	if( state.H ) { return L'H';}
+	if( state.I ) { return L'I';}
+	if( state.J ) { return L'J';}
+	if( state.K ) { return L'K';}
+	if( state.L ) { return L'L';}
+	if( state.M ) { return L'M';}
+	if( state.N ) { return L'N';}
+	if( state.O ) { return L'O';}
+	if( state.P ) { return L'P';}
+	if( state.Q ) { return L'Q';}
+	if( state.R ) { return L'R';}
+	if( state.S ) { return L'S';}
+	if( state.T ) { return L'T';}
+	if( state.U ) { return L'U';}
+	if( state.V ) { return L'V';}
+	if( state.W ) { return L'W';}
+	if( state.X ) { return L'X';}
+	if( state.Y ) { return L'Y';}
+	if( state.Z ) { return L'Z';}
+
+	return L'0';
 }

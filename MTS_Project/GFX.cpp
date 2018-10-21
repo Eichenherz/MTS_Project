@@ -112,7 +112,7 @@ GFX::~GFX()
 	{
 		LogError( hr_mem_leak, "Failed to report live objs" );
 	}
-	p_debug_device->Release();
+	if ( p_debug_device != nullptr ) { p_debug_device->Release(); }
 #endif // _DEBUG
 }
 

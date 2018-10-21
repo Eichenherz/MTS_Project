@@ -4,10 +4,14 @@
 #include <array>
 #include "Tile.h"
 #include "Timer.h"
+#include "Keyboard.h"
 
+using Kbd_Tracker = DirectX::Keyboard::KeyboardStateTracker;
 
 class Game
 {
+	using Tile_Iter = std::array<Tile, 9>::iterator;
+	
 public:
 	Game( class APP_WND& wnd );
 
@@ -28,12 +32,10 @@ private:
 	// RANDOM STUFF
 	std::random_device	rd;
 	std::mt19937		rng;
-
-
 	// TIMER
-	Timer	timer;
-	double	time = 0.0;
-	double	seconds = 0.0;
+	Timer				timer;
+	// KEY TRACKER
+	Kbd_Tracker			kbd_tracker;
 
 
 	// GAME ASSETS
@@ -48,8 +50,12 @@ private:
 	// If you change the # of tiles go change it in Tile.h too
 	std::array<Tile, 9>	tiles;
 	Tile				dummy_tile;
-	using Tile_Iter = std::array<Tile, 9>::iterator;
 	Tile_Iter			swap_iter;
+	// GAME DATA
+	std::wstring		nickname = {};
+	double				time = 0.0;
+	double				seconds = 0.0;
+
 
 	// GAME STATE PARAMS
 	enum class GAME_STATE
@@ -58,6 +64,7 @@ private:
 		PLAYING,
 		RESULTS
 	};
-	GAME_STATE  gs = GAME_STATE::WELCOME;
-	bool		clicked_in_this_frame = false;
+	GAME_STATE			gs = GAME_STATE::RESULTS;
+	bool				clicked_in_this_frame = false;
+	bool				key_pressed_this_frame = false;
 }; 
