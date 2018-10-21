@@ -17,12 +17,12 @@ Game::Game( APP_WND& _wnd )
 	gfx.Load_Texture( p_tile_texture, L"Resources/Rect70x100.dds" );
 
 	// Set tiles
-	
 	for ( size_t i = 0; i < tiles.size(); ++i )
 	{
 		tiles [i].number = std::to_wstring( i + 1 );
 		tiles [i].aabb.c = Vec2( (float) tile_x_step * ( i + 1 ), (float) GFX::height / 2 );
 	}
+	swap_iter = tiles.end();
 
 	// Ramdom shuffle the tiles
 	shuffle_tiles( tiles.begin(), tiles.end(), rng );
@@ -53,31 +53,44 @@ void Game::Update()
 	}
 	case Game::GAME_STATE::PLAYING:
 	{
+		// PREVENT SEVERAL CLICKS PER FRAME
+		clicked_in_this_frame = false;
+
 		const auto mouse_state = wnd.p_mouse->GetState();
-		tracker.Update( mouse_state );
-		if ( tracker.leftButton == DirectX::Mouse::ButtonStateTracker::PRESSED )
+		if ( mouse_state.leftButton ) // MANDATORY CONDITION
 		{
 			const auto mouse_pos = Vec2 { (float) mouse_state.x, (float) mouse_state.y };
 
-			auto iter = tiles.begin(); // Need to store the initial tile
-			for ( ; iter != tiles.end(); ++iter )
+			if ( dummy_tile.state != Tile::STATE::COLLIED )
 			{
-				if ( AABB_vs_Point( iter->aabb, mouse_pos ) )
+				// AQUIRE TILE
+				for ( auto iter = tiles.begin(); iter != tiles.end(); ++iter )
 				{
-					dummy_tile.number = iter->number;
-					dummy_tile.aabb.c = mouse_pos;
-					engage_dummy_flag = true;
-					break;
+					if ( AABB_vs_Point( iter->aabb, mouse_pos ) && !engage_dummy_flag )
+					{
+						dummy_tile.number = iter->number;
+						dummy_tile.state = Tile::STATE::COLLIED;
+						swap_iter = iter;
+						break;
+					}
 				}
 			}
 
-			for ( auto& tile : tiles )
+			dummy_tile.aabb.c = mouse_pos;
+			
+			if ( dummy_tile.state == Tile::STATE::COLLIED )
 			{
-				if ( AABB_vs_AABB( tile.aabb, dummy_tile.aabb ) && 
-					 tracker.leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED )
+				// SWAP TILES
+				for ( auto& tile : tiles )
 				{
-					std::swap( tile, *iter );
-					engage_dummy_flag = false;
+					if ( AABB_vs_AABB( tile.aabb, dummy_tile.aabb ) &&
+						 mouse_state.rightButton && !clicked_in_this_frame )
+					{
+						std::swap( tile.number, swap_iter->number );
+						clicked_in_this_frame = true;
+						dummy_tile.state = Tile::STATE::PENDING;
+						break;
+					}
 				}
 			}
 		}
@@ -130,7 +143,7 @@ void Game::Draw_Model()
 			gfx.Draw_Texture( p_tile_texture, tile.aabb.c );
 			gfx.Draw_Text( p_title_font, tile.aabb.c + tile_offset, tile.number );
 		}
-		if ( engage_dummy_flag )
+		if ( dummy_tile.state == Tile::STATE::COLLIED )
 		{
 			gfx.Draw_Texture( p_tile_texture, dummy_tile.aabb.c );
 			gfx.Draw_Text( p_title_font, dummy_tile.aabb.c + tile_offset, dummy_tile.number );
