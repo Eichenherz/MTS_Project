@@ -43,6 +43,9 @@ void Game::Update()
 
 	case Game::GAME_STATE::WELCOME:
 	{
+		
+
+
 		const auto mouse_event = wnd.p_mouse->GetState();
 		
 		if ( mouse_event.leftButton )
