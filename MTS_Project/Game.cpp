@@ -220,7 +220,7 @@ void Game::Draw_Model()
 		zeit.erase( zeit.cbegin() + 5, zeit.cend() );
 
 		gfx.Draw_Color_Text( p_inst_font, Vec2 { GFX::width / 2, 570 }, L"* type in your nickname", DirectX::Colors::OrangeRed );
-		gfx.Draw_Text( p_cont_font, Vec2 { GFX::width / 2, 200 }, zeit + L"s" + nickname );
+		gfx.Draw_Text( p_cont_font, Vec2 { GFX::width / 2, 200 }, zeit + L"s" + L" " + nickname );
 		break;
 	}
 
