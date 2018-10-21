@@ -1,3 +1,6 @@
 [submodule "MTS_Project/cpr"]
 	path = MTS_Project/cpr
 	url = https://github.com/whoshuu/cpr.git
+[submodule "MTS_Project/--force"]
+	path = MTS_Project/--force
+	url = https://github.com/whoshuu/cpr.git
