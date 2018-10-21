@@ -62,9 +62,9 @@ private:
 	{
 		WELCOME,
 		PLAYING,
-		RESULTS
+		RESULTS,
+		ENDGAME
 	};
 	GAME_STATE			gs = GAME_STATE::RESULTS;
 	bool				clicked_in_this_frame = false;
-	bool				key_pressed_this_frame = false;
 }; 

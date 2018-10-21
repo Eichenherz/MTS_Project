@@ -4,7 +4,7 @@
 
 using namespace TILE_DRAW_PARAMS;
 
-wchar_t Map_Key_to_WChar( DirectX::Keyboard::State state );
+wchar_t Map_Key_to_WChar( DirectX::Keyboard::State state, Kbd_Tracker tracker );
 
 
 Game::Game( APP_WND& _wnd )
@@ -141,13 +141,17 @@ void Game::Update()
 	{
 		const auto kbd_stat = wnd.p_kbd->GetState();
 		kbd_tracker.Update( kbd_stat );
-		if ( !kbd_stat.Enter )
+		if ( !kbd_tracker.IsKeyPressed(DirectX::Keyboard::Keys::Enter) )
 		{
-			const auto Wchar = Map_Key_to_WChar( kbd_stat );
+			const auto Wchar = Map_Key_to_WChar( kbd_stat, kbd_tracker );
 			if ( Wchar != L'0' )
 			{
 				nickname += Wchar;
 			}
+		}
+		else
+		{
+			gs = GAME_STATE::ENDGAME;
 		}
 		break;
 	}
@@ -209,6 +213,8 @@ void Game::Draw_Model()
 		}
 		break;
 	}
+	case Game::GAME_STATE::ENDGAME:
+		// want to show same scene, but not to take user imp
 	case Game::GAME_STATE::RESULTS:
 	{
 		gfx.Draw_Color_Text( p_inst_font, Vec2 { GFX::width / 2, 570 }, L"* type in your nickname", DirectX::Colors::OrangeRed );
@@ -222,32 +228,32 @@ void Game::Draw_Model()
 
 wchar_t Map_Key_to_WChar( DirectX::Keyboard::State state, Kbd_Tracker tracker )
 {
-	if( tracker.IsKeyPressed( DirectX::Keyboard::Keys::A ) { return L'A';}
-	if( state.B ) { return L'B';}
-	if( state.C ) { return L'C';}
-	if( state.D ) { return L'D';}
-	if( state.E ) { return L'E';}
-	if( state.F ) { return L'F';}
-	if( state.G ) { return L'G';}
-	if( state.H ) { return L'H';}
-	if( state.I ) { return L'I';}
-	if( state.J ) { return L'J';}
-	if( state.K ) { return L'K';}
-	if( state.L ) { return L'L';}
-	if( state.M ) { return L'M';}
-	if( state.N ) { return L'N';}
-	if( state.O ) { return L'O';}
-	if( state.P ) { return L'P';}
-	if( state.Q ) { return L'Q';}
-	if( state.R ) { return L'R';}
-	if( state.S ) { return L'S';}
-	if( state.T ) { return L'T';}
-	if( state.U ) { return L'U';}
-	if( state.V ) { return L'V';}
-	if( state.W ) { return L'W';}
-	if( state.X ) { return L'X';}
-	if( state.Y ) { return L'Y';}
-	if( state.Z ) { return L'Z';}
+	if( tracker.IsKeyPressed( DirectX::Keyboard::Keys::A ) ) { return L'A';}
+	if( tracker.IsKeyPressed( DirectX::Keyboard::Keys::B ) ) { return L'B';}
+	if( tracker.IsKeyPressed( DirectX::Keyboard::Keys::C ) ) { return L'C';}
+	if( tracker.IsKeyPressed( DirectX::Keyboard::Keys::D ) ) { return L'D';}
+	if( tracker.IsKeyPressed( DirectX::Keyboard::Keys::E ) ) { return L'E';}
+	if( tracker.IsKeyPressed( DirectX::Keyboard::Keys::F ) ) { return L'F';}
+	if( tracker.IsKeyPressed( DirectX::Keyboard::Keys::G ) ) { return L'G';}
+	if( tracker.IsKeyPressed( DirectX::Keyboard::Keys::H ) ) { return L'H';}
+	if( tracker.IsKeyPressed( DirectX::Keyboard::Keys::I ) ) { return L'I';}
+	if( tracker.IsKeyPressed( DirectX::Keyboard::Keys::J ) ) { return L'J';}
+	if( tracker.IsKeyPressed( DirectX::Keyboard::Keys::K ) ) { return L'K';}
+	if( tracker.IsKeyPressed( DirectX::Keyboard::Keys::L ) ) { return L'L';}
+	if( tracker.IsKeyPressed( DirectX::Keyboard::Keys::M ) ) { return L'M';}
+	if( tracker.IsKeyPressed( DirectX::Keyboard::Keys::N ) ) { return L'N';}
+	if( tracker.IsKeyPressed( DirectX::Keyboard::Keys::O ) ) { return L'O';}
+	if( tracker.IsKeyPressed( DirectX::Keyboard::Keys::P ) ) { return L'P';}
+	if( tracker.IsKeyPressed( DirectX::Keyboard::Keys::Q ) ) { return L'Q';}
+	if( tracker.IsKeyPressed( DirectX::Keyboard::Keys::R ) ) { return L'R';}
+	if( tracker.IsKeyPressed( DirectX::Keyboard::Keys::S ) ) { return L'S';}
+	if( tracker.IsKeyPressed( DirectX::Keyboard::Keys::T ) ) { return L'T';}
+	if( tracker.IsKeyPressed( DirectX::Keyboard::Keys::U ) ) { return L'U';}
+	if( tracker.IsKeyPressed( DirectX::Keyboard::Keys::V ) ) { return L'V';}
+	if( tracker.IsKeyPressed( DirectX::Keyboard::Keys::W ) ) { return L'W';}
+	if( tracker.IsKeyPressed( DirectX::Keyboard::Keys::X ) ) { return L'X';}
+	if( tracker.IsKeyPressed( DirectX::Keyboard::Keys::Y ) ) { return L'Y';}
+	if( tracker.IsKeyPressed( DirectX::Keyboard::Keys::Z ) ) { return L'Z';}
 
 	return L'0';
 }
